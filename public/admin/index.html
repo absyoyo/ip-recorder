@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理后台</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .box { background: rgba(30,41,59,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2.5rem 2rem; width: 100%; max-width: 360px; }
+    h1 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center; }
+    label { display: block; font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.4rem; }
+    input[type=password] { width: 100%; padding: 0.6rem 0.9rem; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #f8fafc; font-size: 0.95rem; outline: none; }
+    input[type=password]:focus { border-color: #3b82f6; }
+    button { margin-top: 1.25rem; width: 100%; padding: 0.65rem; background: #3b82f6; border: none; border-radius: 6px; color: #fff; font-size: 0.95rem; cursor: pointer; }
+    button:hover { background: #2563eb; }
+    .error { margin-top: 0.75rem; font-size: 0.8rem; color: #f87171; text-align: center; min-height: 1.2em; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>管理后台</h1>
+    <label for="pwd">密码</label>
+    <input type="password" id="pwd" placeholder="请输入密码" autofocus>
+    <button id="btn">登录</button>
+    <div class="error" id="err"></div>
+  </div>
+  <script src="js/login.js"></script>
+</body>
+</html>
