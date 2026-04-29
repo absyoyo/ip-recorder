@@ -82,8 +82,8 @@ async function refreshStats() {
   } else {
     geoList.innerHTML = geoDist.map(item => `
       <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--card-border);">
-        <span>${item.province || '未知'}</span>
-        <span class="tag">${item.count} 次</span>
+        <span>${escapeHtml(item.province || '未知')}</span>
+        <span class="tag">${escapeHtml(String(item.count))} 次</span>
       </div>
     `).join('');
   }
@@ -119,28 +119,27 @@ function renderLogTable(logs) {
     
     return `
       <tr class="log-row" ${rowStyle} data-ua="${escapeHtml(log.user_agent)}">
-        <td>${new Date(log.created_at).toLocaleString()}</td>
-        <td><code style="color: var(--accent-color)">${log.ip}</code></td>
-        <td>${log.webrtc_ip ? `<code>${log.webrtc_ip}</code>` : '-'}</td>
+        <td>${escapeHtml(new Date(log.created_at).toLocaleString())}</td>
+        <td><code style="color: var(--accent-color)">${escapeHtml(log.ip)}</code></td>
+        <td>${log.webrtc_ip ? `<code>${escapeHtml(log.webrtc_ip)}</code>` : '-'}</td>
         <td>
-          <div>${log.country} ${log.province}</div>
-          <div style="font-size: 0.75rem; color: var(--text-secondary)">${log.city} ${log.isp}</div>
+          <div>${escapeHtml(log.country)} ${escapeHtml(log.province)}</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary)">${escapeHtml(log.city)} ${escapeHtml(log.isp)}</div>
         </td>
         <td>
           ${isVpn ? '<span class="tag" style="background: #f87171; color: white">疑似 VPN</span>' : '<span class="tag" style="background: #10b981; color: white">正常</span>'}
         </td>
         <td>
-          <div class="tag" style="margin-bottom: 0.25rem">${log.platform}</div>
-          <div style="font-size: 0.75rem">${log.browser} ${log.browser_ver}</div>
-          ${log.device_model !== 'Unknown' ? `<div style="font-size: 0.75rem; color: var(--text-secondary)">${log.device_vendor} ${log.device_model}</div>` : ''}
+          <div class="tag" style="margin-bottom: 0.25rem">${escapeHtml(log.platform)}</div>
+          <div style="font-size: 0.75rem">${escapeHtml(log.browser)} ${escapeHtml(log.browser_ver)}</div>
+          ${log.device_model !== 'Unknown' ? `<div style="font-size: 0.75rem; color: var(--text-secondary)">${escapeHtml(log.device_vendor)} ${escapeHtml(log.device_model)}</div>` : ''}
         </td>
       </tr>
       <tr class="ua-detail" style="display: none">
         <td colspan="6" style="background: rgba(0,0,0,0.2); padding: 1rem; font-family: monospace; font-size: 0.75rem; word-break: break-all;">
-          <strong>User Agent:</strong> ${log.user_agent}
+          <strong>User Agent:</strong> ${escapeHtml(log.user_agent)}
         </td>
-      </tr>
-    `;
+      </tr>    `;
   }).join('');
 
   // Add click listener for row expansion
