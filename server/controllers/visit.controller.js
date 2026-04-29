@@ -21,17 +21,22 @@ export const logVisit = async (req, res) => {
 
   const geo = await getIpInfo(ip);
 
+  const { webrtc_ip } = req.query;
+  const is_vpn = (webrtc_ip && webrtc_ip !== ip) ? 1 : 0;
+
   try {
     const stmt = db.prepare(`
       INSERT INTO visit_logs (
-        ip, country, province, city, isp, 
+        ip, webrtc_ip, is_vpn, country, province, city, isp, 
         platform, device_vendor, device_model, 
         browser, browser_ver, user_agent
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     stmt.run(
       ip, 
+      webrtc_ip || null,
+      is_vpn,
       geo.country || '未知', 
       geo.province || '未知', 
       geo.city || '未知', 
