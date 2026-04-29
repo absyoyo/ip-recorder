@@ -1,8 +1,8 @@
-import Database from 'better-sqlite3';
+import { DatabaseSync } from 'node:sqlite';
 import path from 'path';
 
 const dbPath = path.resolve('data/visits.db');
-const db = new Database(dbPath);
+const db = new DatabaseSync(dbPath);
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS visit_logs (
