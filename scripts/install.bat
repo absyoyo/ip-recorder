@@ -22,7 +22,7 @@ if not exist "data" (
 :: Download ip2region.xdb using PowerShell
 set XDB_URL=https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region.xdb
 echo Downloading ip2region.xdb...
-powershell -Command "Invoke-WebRequest -Uri '%XDB_URL%' -OutFile 'data\ip2region.xdb'"
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri '%XDB_URL%' -OutFile 'data\ip2region.xdb'"
 
 if %ERRORLEVEL% equ 0 (
     echo Installation successful!
