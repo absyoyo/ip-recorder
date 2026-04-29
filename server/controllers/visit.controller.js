@@ -78,3 +78,33 @@ export const getLogs = (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+export const getStats = (req, res) => {
+  try {
+    const todayCount = db.prepare(`
+      SELECT COUNT(*) as count FROM visit_logs 
+      WHERE created_at >= date('now')
+    `).get().count;
+
+    const totalCount = db.prepare(`
+      SELECT COUNT(*) as count FROM visit_logs
+    `).get().count;
+
+    const geoDist = db.prepare(`
+      SELECT province, COUNT(*) as count 
+      FROM visit_logs 
+      GROUP BY province 
+      ORDER BY count DESC 
+      LIMIT 10
+    `).all();
+
+    res.json({
+      todayCount,
+      totalCount,
+      geoDist
+    });
+  } catch (err) {
+    console.error('Database stats error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};

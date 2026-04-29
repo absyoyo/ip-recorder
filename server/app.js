@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { logVisit, getLogs } from './controllers/visit.controller.js';
+import { logVisit, getLogs, getStats } from './controllers/visit.controller.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -20,6 +20,9 @@ app.get('/v', logVisit);
 
 // 获取日志路由
 app.get('/api/logs', getLogs);
+
+// 获取统计数据路由
+app.get('/api/stats', getStats);
 
 // 错误处理中间件
 app.use((err, req, res, next) => {
