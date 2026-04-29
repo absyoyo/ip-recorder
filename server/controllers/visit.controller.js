@@ -24,28 +24,38 @@ export const logVisit = async (req, res) => {
   const { webrtc_ip } = req.query;
   const is_vpn = (webrtc_ip && webrtc_ip !== ip) ? 1 : 0;
 
+  let webrtcGeo = { country: null, province: null, city: null, isp: null };
+  if (webrtc_ip) {
+    webrtcGeo = await getIpInfo(webrtc_ip);
+  }
+
   try {
     const stmt = db.prepare(`
       INSERT INTO visit_logs (
-        ip, webrtc_ip, is_vpn, country, province, city, isp, 
+        ip, webrtc_ip, is_vpn, country, province, city, isp,
+        webrtc_country, webrtc_province, webrtc_city, webrtc_isp,
         platform, device_vendor, device_model, 
         browser, browser_ver, user_agent
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     stmt.run(
-      ip, 
+      ip,
       webrtc_ip || null,
       is_vpn,
-      geo.country || '未知', 
-      geo.province || '未知', 
-      geo.city || '未知', 
+      geo.country || '未知',
+      geo.province || '未知',
+      geo.city || '未知',
       geo.isp || '未知',
-      os.name || 'Unknown', 
-      device.vendor || 'Unknown', 
+      webrtcGeo.country || null,
+      webrtcGeo.province || null,
+      webrtcGeo.city || null,
+      webrtcGeo.isp || null,
+      os.name || 'Unknown',
+      device.vendor || 'Unknown',
       device.model || 'Unknown',
-      browser.name || 'Unknown', 
-      browser.version || 'Unknown', 
+      browser.name || 'Unknown',
+      browser.version || 'Unknown',
       ua
     );
   } catch (err) {
@@ -56,21 +66,33 @@ export const logVisit = async (req, res) => {
 };
 
 export const getLogs = (req, res) => {
-  const { page = 1, limit = 10, days = 7 } = req.query;
+  const { page = 1, limit = 10, days = 7, start, end } = req.query;
   const offset = (Math.max(1, Number(page)) - 1) * Number(limit);
   
   try {
+    let whereClause = '';
+    let params = [];
+
+    if (start && end) {
+      whereClause = 'WHERE created_at >= ? AND created_at <= ?';
+      params = [start, end, Number(limit), offset];
+    } else {
+      whereClause = 'WHERE created_at >= datetime(\'now\', ?)';
+      params = [`-${days} days`, Number(limit), offset];
+    }
+
     const logs = db.prepare(`
       SELECT * FROM visit_logs 
-      WHERE created_at >= datetime('now', ?)
+      ${whereClause}
       ORDER BY created_at DESC 
       LIMIT ? OFFSET ?
-    `).all(`-${days} days`, Number(limit), offset);
+    `).all(...params);
 
+    const countParams = start && end ? [start, end] : [`-${days} days`];
     const total = db.prepare(`
       SELECT COUNT(*) as count FROM visit_logs 
-      WHERE created_at >= datetime('now', ?)
-    `).get(`-${days} days`).count;
+      ${whereClause}
+    `).get(...countParams).count;
 
     res.json({ 
       logs, 

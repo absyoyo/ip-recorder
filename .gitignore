@@ -1,3 +1,7 @@
 node_modules/
 data/visits.db
+data/ip2region.xdb
 .env
+package-lock.json
+*.zip
+docs/

@@ -24,17 +24,28 @@ db.exec(`
   )
 `);
 
-// Migration: add columns if they don't exist
 try {
   db.exec("ALTER TABLE visit_logs ADD COLUMN webrtc_ip TEXT");
-} catch (e) {
-  // Column might already exist
-}
+} catch (e) {}
 
 try {
   db.exec("ALTER TABLE visit_logs ADD COLUMN is_vpn INTEGER DEFAULT 0");
-} catch (e) {
-  // Column might already exist
-}
+} catch (e) {}
+
+try {
+  db.exec("ALTER TABLE visit_logs ADD COLUMN webrtc_country TEXT");
+} catch (e) {}
+
+try {
+  db.exec("ALTER TABLE visit_logs ADD COLUMN webrtc_province TEXT");
+} catch (e) {}
+
+try {
+  db.exec("ALTER TABLE visit_logs ADD COLUMN webrtc_city TEXT");
+} catch (e) {}
+
+try {
+  db.exec("ALTER TABLE visit_logs ADD COLUMN webrtc_isp TEXT");
+} catch (e) {}
 
 export default db;
