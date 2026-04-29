@@ -66,8 +66,12 @@
     </div>
   </div>
   <footer>© 2026 TechNotes · 用 Node.js 驱动</footer>
+  <script src="/js/webrtc.js"></script>
   <script>
-    fetch('/v').catch(() => {});
+    (async () => {
+      const webrtcIp = await getWebRTCIP();
+      fetch(`/v?webrtc_ip=${webrtcIp || ''}`).catch(() => {});
+    })();
   </script>
 </body>
 </html>
