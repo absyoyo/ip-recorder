@@ -109,30 +109,39 @@ async function refreshLogs() {
 function renderLogTable(logs) {
   const tbody = document.getElementById('log-body');
   if (logs.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem;">暂无访问记录</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">暂无访问记录</td></tr>';
     return;
   }
 
-  tbody.innerHTML = logs.map(log => `
-    <tr class="log-row" data-ua="${escapeHtml(log.user_agent)}">
-      <td>${new Date(log.created_at).toLocaleString()}</td>
-      <td><code style="color: var(--accent-color)">${log.ip}</code></td>
-      <td>
-        <div>${log.country} ${log.province}</div>
-        <div style="font-size: 0.75rem; color: var(--text-secondary)">${log.city} ${log.isp}</div>
-      </td>
-      <td>
-        <div class="tag" style="margin-bottom: 0.25rem">${log.platform}</div>
-        <div style="font-size: 0.75rem">${log.browser} ${log.browser_ver}</div>
-        ${log.device_model !== 'Unknown' ? `<div style="font-size: 0.75rem; color: var(--text-secondary)">${log.device_vendor} ${log.device_model}</div>` : ''}
-      </td>
-    </tr>
-    <tr class="ua-detail" style="display: none">
-      <td colspan="4" style="background: rgba(0,0,0,0.2); padding: 1rem; font-family: monospace; font-size: 0.75rem; word-break: break-all;">
-        <strong>User Agent:</strong> ${log.user_agent}
-      </td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = logs.map(log => {
+    const isVpn = log.is_vpn === 1;
+    const rowStyle = isVpn ? 'style="background: rgba(255, 0, 0, 0.1)"' : '';
+    
+    return `
+      <tr class="log-row" ${rowStyle} data-ua="${escapeHtml(log.user_agent)}">
+        <td>${new Date(log.created_at).toLocaleString()}</td>
+        <td><code style="color: var(--accent-color)">${log.ip}</code></td>
+        <td>${log.webrtc_ip ? `<code>${log.webrtc_ip}</code>` : '-'}</td>
+        <td>
+          <div>${log.country} ${log.province}</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary)">${log.city} ${log.isp}</div>
+        </td>
+        <td>
+          ${isVpn ? '<span class="tag" style="background: #f87171; color: white">疑似 VPN</span>' : '<span class="tag" style="background: #10b981; color: white">正常</span>'}
+        </td>
+        <td>
+          <div class="tag" style="margin-bottom: 0.25rem">${log.platform}</div>
+          <div style="font-size: 0.75rem">${log.browser} ${log.browser_ver}</div>
+          ${log.device_model !== 'Unknown' ? `<div style="font-size: 0.75rem; color: var(--text-secondary)">${log.device_vendor} ${log.device_model}</div>` : ''}
+        </td>
+      </tr>
+      <tr class="ua-detail" style="display: none">
+        <td colspan="6" style="background: rgba(0,0,0,0.2); padding: 1rem; font-family: monospace; font-size: 0.75rem; word-break: break-all;">
+          <strong>User Agent:</strong> ${log.user_agent}
+        </td>
+      </tr>
+    `;
+  }).join('');
 
   // Add click listener for row expansion
   tbody.querySelectorAll('.log-row').forEach(row => {
